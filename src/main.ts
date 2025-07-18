@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { gsap } from "gsap";
 
 // --- Type & Card Data ---
 type Suit = '♠' | '♥' | '♦' | '♣';
@@ -26,7 +27,7 @@ function randomCard(): Card {
   return { value, label, suit, color };
 }
 function generate4Cards(): Card[] {
-  // For simplicity: boleh duplicate, tapi bisa dimodif jadi unique
+  // Boleh duplikat, 4 kartu random
   return [randomCard(), randomCard(), randomCard(), randomCard()];
 }
 
@@ -34,6 +35,13 @@ function generate4Cards(): Card[] {
 let camera: THREE.PerspectiveCamera, scene: THREE.Scene, renderer: THREE.WebGLRenderer, controls: any;
 const cardMeshes: THREE.Mesh[] = [];
 let cards: Card[] = generate4Cards();
+
+// --- Score ---
+let score = 0;
+function updateScore() {
+  const el = document.getElementById('score');
+  if (el) el.innerText = `Poin: ${score}`;
+}
 
 // Generate card texture dynamically (front)
 function createCardTexture(label: string, suit: string, color: string): THREE.Texture {
@@ -53,35 +61,52 @@ function createCardTexture(label: string, suit: string, color: string): THREE.Te
   ctx.font = '62px Arial';
   ctx.fillText(suit, 24, 180);
   ctx.textAlign = 'right';
-  ctx.fillText(label, 232, 356-28);
+  ctx.fillText(label, 232, 356 - 28);
   ctx.font = '54px Arial';
-  ctx.fillText(suit, 232, 356-68);
+  ctx.fillText(suit, 232, 356 - 68);
   return new THREE.CanvasTexture(canvas);
 }
 
 // --- Render 3D Cards ---
 function render3DCards(newCards: Card[]) {
-  if (!scene) return;
-  // Remove old
-  cardMeshes.forEach(mesh => scene.remove(mesh));
-  cardMeshes.length = 0;
 
-  // Layout
-  newCards.forEach((card, i) => {
-    const geometry = new THREE.BoxGeometry(1.6, 2.5, 0.13);
-    const front = new THREE.MeshPhongMaterial({ map: createCardTexture(card.label, card.suit, card.color) });
-    const back = new THREE.MeshPhongMaterial({ color: 0x183c8e });
-    const edge = new THREE.MeshPhongMaterial({ color: 0xf1f1f1 });
-    const materials = [edge, edge, edge, edge, front, back];
+    if (!scene) return;
+    // Remove old cards from scene
+    cardMeshes.forEach(mesh => scene.remove(mesh));
+    cardMeshes.length = 0;
 
-    const mesh = new THREE.Mesh(geometry, materials);
-    mesh.position.set(-2.4 + i * 1.7, 1.5, 0);
-    mesh.castShadow = true;
-    mesh.name = `card${i}`;
-    scene.add(mesh);
-    cardMeshes.push(mesh);
-  });
-}
+    // Posisi awal: tumpukan (pile)
+    const pilePosition = { x: 0, y: 1.5, z: -3 };
+
+    // Layout target posisi di meja
+    newCards.forEach((card, i) => {
+      const geometry = new THREE.BoxGeometry(1.6, 2.5, 0.13);
+      const front = new THREE.MeshPhongMaterial({ map: createCardTexture(card.label, card.suit, card.color) });
+      const back = new THREE.MeshPhongMaterial({ color: 0x183c8e });
+      const edge = new THREE.MeshPhongMaterial({ color: 0xf1f1f1 });
+      const materials = [edge, edge, edge, edge, front, back];
+
+      const mesh = new THREE.Mesh(geometry, materials);
+      // Mulai dari tumpukan
+      mesh.position.set(pilePosition.x, pilePosition.y, pilePosition.z);
+      mesh.castShadow = true;
+      mesh.name = `card${i}`;
+      scene.add(mesh);
+      cardMeshes.push(mesh);
+
+      // Animasi ke posisi final di meja, delay satu per satu
+      const target = { x: -2.4 + i * 1.7, y: 1.5, z: 0 };
+      gsap.to(mesh.position, {
+        x: target.x,
+        y: target.y,
+        z: target.z,
+        duration: 0.6,
+        delay: i * 0.12,
+        ease: "power2.out"
+      });
+    });
+  }
+
 
 // --- Setup Three.js Scene ---
 function setupThree() {
@@ -206,7 +231,7 @@ function check24(expr: string, cardVals: number[]): string {
     // eslint-disable-next-line no-new-func
     const val = Function(`"use strict";return (${cleanExpr})`)();
     if (Math.abs(val - 24) < 1e-6) return '🎉 Benar! Hasilnya 24';
-    return '❌ Salah. Hasil ekspresi: ' + val;
+    return '❌ Jawaban Anda Salah. Hasil ekspresi: ' + val;
   } catch {
     return 'Ekspresi tidak valid!';
   }
@@ -220,6 +245,7 @@ function updateAll() {
   const expr = document.getElementById('expression') as HTMLInputElement;
   expr.value = '';
   document.getElementById('result')!.innerText = '';
+  updateScore();
 }
 
 // --- Event Binding ---
@@ -227,12 +253,19 @@ window.onload = () => {
   setupThree();
   renderCardsList(cards);
   renderOperators();
+  updateScore();
 
   document.getElementById('check-btn')!.onclick = () => {
     const expr = (document.getElementById('expression') as HTMLInputElement).value;
     const cardVals = cards.map(c => c.value);
     const result = check24(expr, cardVals);
     document.getElementById('result')!.innerText = result;
+
+    // Tambah skor jika benar
+    if (result.startsWith('🎉 Benar!')) {
+      score++;
+      updateScore();
+    }
   };
   document.getElementById('new-btn')!.onclick = () => {
     cards = generate4Cards();

@@ -65,6 +65,14 @@ button:hover { background: #44aa66; }
   box-shadow: 1px 2px 6px #0002;
   transition: background 0.15s;
 }
+.score-info {
+  display: inline-block;
+  margin-left: 16px;
+  font-size: 1.1em;
+  color: #ffd600;
+  font-weight: bold;
+  vertical-align: middle;
+}
 .op-btn:hover {
   background: #ffe7a3;
 }

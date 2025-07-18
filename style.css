@@ -48,3 +48,23 @@ button {
 }
 button:hover { background: #44aa66; }
 #result { margin-top: 14px; font-size: 1.3em; }
+.op-group {
+  margin-bottom: 8px;
+}
+.op-btn {
+  display: inline-block;
+  padding: 7px 17px;
+  margin: 0 4px;
+  font-size: 1.2em;
+  background: #f8c012;
+  color: #222;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 1px 2px 6px #0002;
+  transition: background 0.15s;
+}
+.op-btn:hover {
+  background: #ffe7a3;
+}

@@ -149,8 +149,27 @@ function renderCardsList(cards: Card[]) {
     span.onclick = () => {
       const input = document.getElementById('expression') as HTMLInputElement;
       input.value += input.value ? ` ${card.label}` : `${card.label}`;
+      input.focus();
     };
     cardsList.appendChild(span);
+  });
+}
+
+// --- Operator Buttons ---
+function renderOperators() {
+  const ops = ['+', '-', '*', '/', '(', ')'];
+  const opsDiv = document.getElementById('operators')!;
+  opsDiv.innerHTML = '';
+  ops.forEach(op => {
+    const btn = document.createElement('button');
+    btn.className = 'op-btn';
+    btn.innerText = op;
+    btn.onclick = () => {
+      const input = document.getElementById('expression') as HTMLInputElement;
+      input.value += ' ' + op + ' ';
+      input.focus();
+    };
+    opsDiv.appendChild(btn);
   });
 }
 
@@ -197,6 +216,7 @@ function check24(expr: string, cardVals: number[]): string {
 function updateAll() {
   render3DCards(cards);
   renderCardsList(cards);
+  renderOperators();
   const expr = document.getElementById('expression') as HTMLInputElement;
   expr.value = '';
   document.getElementById('result')!.innerText = '';
@@ -206,6 +226,7 @@ function updateAll() {
 window.onload = () => {
   setupThree();
   renderCardsList(cards);
+  renderOperators();
 
   document.getElementById('check-btn')!.onclick = () => {
     const expr = (document.getElementById('expression') as HTMLInputElement).value;
@@ -218,4 +239,3 @@ window.onload = () => {
     updateAll();
   };
 };
-

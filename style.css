@@ -2,44 +2,82 @@ body {
   font-family: 'Segoe UI', Arial, sans-serif;
   background: #1b4d32;
   color: #fff;
-  margin: 0; padding: 0;
+  margin: 0;
+  padding: 0;
   min-height: 100vh;
+  font-size: 1em;
 }
-h1 { text-align: center; margin-top: 16px; }
-#threejs-container { width: 100vw; height: 300px; background: #276944; }
+
+h1 {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 1.5em;
+}
+
+#threejs-container {
+  width: 100vw;
+  height: 300px;
+  background: #276944;
+  min-width: 100vw;
+  overflow-x: auto;
+}
+
 .controls {
   text-align: center;
   margin-top: 16px;
+  font-size: 1em;
+  padding: 0;
 }
 
-#cards-list, #op-list, #exp-bar {
+#cards-list,
+#op-list,
+#exp-bar {
   margin: 8px 0;
   text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 3px;
 }
+
 .exp-btn {
   margin: 0 3px 7px 3px;
   padding: 8px 18px;
   font-size: 1.15em;
   border-radius: 7px;
   border: 2px solid #fff;
-  background: #fff; color: #222;
+  background: #fff;
+  color: #222;
   cursor: pointer;
   transition: box-shadow .1s, background .1s, color .15s;
   font-weight: bold;
   min-width: 52px;
 }
-.exp-btn.red { color: #c00; border-color: #c00; }
-.exp-btn:disabled { 
-  background: #ddd; color: #888; border-color: #bbb; 
-  cursor: not-allowed; opacity: 0.6;
+
+.exp-btn.red {
+  color: #c00;
+  border-color: #c00;
 }
+
+.exp-btn:disabled {
+  background: #ddd;
+  color: #888;
+  border-color: #bbb;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .expbar-btn {
-  background: #ffd700; 
-  color: #333; 
+  background: #ffd700;
+  color: #333;
   border-color: #aaa;
   margin-bottom: 0;
 }
-.expbar-btn:hover { background: #fa0; color: #fff; }
+
+.expbar-btn:hover {
+  background: #fa0;
+  color: #fff;
+}
 
 button {
   padding: 8px 14px;
@@ -54,9 +92,18 @@ button {
   transition: background 0.2s;
   box-shadow: 1px 2px 6px #0002;
 }
-button:hover:not(:disabled) { background: #44aa66; }
 
-#result { margin-top: 14px; font-size: 1.3em; min-height: 1.6em;}
+button:hover:not(:disabled) {
+  background: #44aa66;
+}
+
+#result {
+  margin-top: 14px;
+  font-size: 1.3em;
+  min-height: 1.6em;
+  word-break: break-all;
+}
+
 .score-info {
   display: inline-block;
   margin-left: 16px;
@@ -75,17 +122,57 @@ button:hover:not(:disabled) { background: #44aa66; }
   border-radius: 7px;
   border: 2px solid #fff;
   font-size: 1.28em;
-  background: #fff; color: #000;
+  background: #fff;
+  color: #000;
   cursor: pointer;
   font-weight: bold;
   transition: transform 0.1s;
 }
-.card-inline.red { color: #c00; border-color: #c00; }
-.card-inline:active { transform: scale(1.12); }
 
+.card-inline.red {
+  color: #c00;
+  border-color: #c00;
+}
+
+.card-inline:active {
+  transform: scale(1.12);
+}
+
+/* ----------- Responsive: HP ------------- */
 @media (max-width: 600px) {
-  #threejs-container { height: 200px; }
-  .controls { font-size: 0.98em; }
-  .exp-btn { font-size: 1em; min-width: 38px; }
-  .card-inline { font-size: 1.06em; min-width: 34px; }
+  body {
+    font-size: 0.98em;
+    padding: 0;
+  }
+  h1 {
+    font-size: 1.18em;
+    margin-top: 10px;
+  }
+  #threejs-container {
+    height: 180px;
+    min-width: 100vw;
+    overflow-x: auto;
+  }
+  .controls {
+    font-size: 0.98em;
+    padding: 4px;
+  }
+  .exp-btn {
+    font-size: 0.93em;
+    min-width: 35px;
+    padding: 6px 10px;
+  }
+  .card-inline {
+    font-size: 1em;
+    min-width: 32px;
+    padding: 6px 7px;
+  }
+  button {
+    padding: 7px 8px;
+    font-size: 0.96em;
+  }
+  #result {
+    font-size: 1.08em;
+    word-break: break-all;
+  }
 }

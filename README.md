@@ -117,4 +117,3 @@ Game ini open-source dan dapat dikembangkan lebih lanjut.
 
 ---
 
-Jika butuh README dalam format bahasa Inggris atau ingin tambahan fitur, silakan request!
